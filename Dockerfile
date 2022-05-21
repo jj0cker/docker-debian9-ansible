@@ -10,13 +10,17 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        sudo systemd \
        build-essential libffi-dev libssl-dev \
-       python-pip python-dev python-setuptools python-wheel \
+       locales \
+       python3-pip python3-dev python3-setuptools python3-wheel \
     && rm -rf /var/lib/apt/lists/* \
     && rm -Rf /usr/share/doc && rm -Rf /usr/share/man \
     && apt-get clean
 
 # Install Ansible via pip.
-RUN pip install $pip_packages
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+RUN pip3 install --upgrade pip \
+    && pip3 install $pip_packages
 
 COPY initctl_faker .
 RUN chmod +x initctl_faker && rm -fr /sbin/initctl && ln -s /initctl_faker /sbin/initctl
